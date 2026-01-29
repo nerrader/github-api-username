@@ -11,7 +11,7 @@ interface APIData {
 	repo: {
 		readonly name: string;
 	};
-	payload: any;
+	payload: any; //problem is every payload is different for every type so
 	readonly created_at: string;
 	readonly status?: string;
 }
@@ -95,7 +95,7 @@ async function getUserData() {
 	const username = process.argv[2];
 	if (typeof username !== "string") {
 		logErrorMessage("Username not inputted");
-		return "exit";
+		process.exit(1);
 	}
 	try {
 		const response = await fetch(
@@ -112,18 +112,18 @@ async function getUserData() {
 		const data: APIData[] = (await response.json()) as APIData[];
 		if (response.status === 404) {
 			logErrorMessage(`Username ${username} does not exist.`);
-			return "exit";
+			process.exit(1);
 		} else {
 			return data;
 		}
 	} catch (e) {
 		logErrorMessage("Something went wrong...");
 		console.log(chalk.red(e));
-		return "exit";
+		process.exit(1);
 	}
 }
 const APIData = await getUserData();
-if (typeof APIData === "undefined" || typeof APIData === "string") {
+if (typeof APIData === "undefined") {
 	logErrorMessage("APIData is undefined, something went wrong.");
 	process.exit(1);
 }
@@ -135,7 +135,7 @@ const userData: userData[] = APIData.map((event) => {
 		payload,
 	} = event;
 	let { created_at: createdAt } = event;
-	let message: string = "placeholder";
+	const message: string = "placeholder";
 	createdAt = dateToUTC(createdAt);
 	return { type, repo, createdAt, payload, message };
 }).reverse();
