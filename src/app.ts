@@ -105,7 +105,6 @@ async function getUserData(username: string) {
 			headers: {
 				Authorization: `Bearer ${process.env.githubtoken}`,
 				"X-GitHub-Api-Version": "2022-11-28",
-				"User-Agent": "github api cli app",
 			},
 		},
 	);
